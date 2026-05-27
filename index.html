@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Just For You ✨</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Animated Gradient Background */
+            background: linear-gradient(-45deg, #ff758c, #ff7eb3, #a29bfe, #fd79a8);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            z-index: 10;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
+            height: 50px;
+        }
+
+        button {
+            padding: 10px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #yes-btn {
+            background: #fff;
+            color: #ff4757;
+        }
+
+        #yes-btn:hover {
+            transform: scale(1.1);
+            background: #ff4757;
+            color: #fff;
+        }
+
+        #no-btn {
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            position: absolute;
+            left: 270px; /* Start 100px further right */
+            /* Positioning logic controlled by JS */
+        }
+
+        /* Typewriter text container */
+        #success-message {
+            display: none;
+            color: #fff;
+            font-size: 1.2em;
+            line-height: 1.6;
+            text-align: left;
+            margin-top: 20px;
+            min-height: 120px;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card" id="main-card">
+        <h1 id="main-text">Will you go on a date with me? 🥺</h1>
+        
+        <div class="buttons" id="btn-container">
+            <button id="yes-btn" onclick="sayYes()">Yes!</button>
+            <button id="no-btn">    No</button>
+        </div>
+
+        <div id="success-message"></div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const btnContainer = document.getElementById('btn-container');
+        
+        // Trick: Make the 'No' button run away on hover or touch
+        const moveButton = () => {
+            const containerRect = btnContainer.getBoundingClientRect();
+            
+            // Generate random positions (keeping it somewhat within screen bounds)
+            const x = Math.random() * (window.innerWidth - 100) - (window.innerWidth / 2 - 50);
+            const y = Math.random() * (window.innerHeight - 100) - (window.innerHeight / 2 - 50);
+            
+            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        };
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', moveButton); // For mobile phones
+
+        // When she finally clicks 'Yes'
+        function sayYes() {
+            document.getElementById('main-text').innerText = "Yay! I knew it! ❤️";
+            btnContainer.style.display = 'none';
+            
+            const successMsg = document.getElementById('success-message');
+            successMsg.style.display = 'block';
+            
+            // Start Typewriter effect and confetti
+            typeWriter();
+            createHeartRain();
+        }
+
+        // Typewriter Effect Data
+        const text = "You just made my day! Get ready for the best time ever. I'll pick you up soon. Love you! ✨";
+        let i = 0;
+        const speed = 50; // typing speed in milliseconds
+
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("success-message").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, speed);
+            }
+        }
+
+        // Heart Rain Animation
+        function createHeartRain() {
+            const emojis = ['💖', '✨', '🌸', '🥰'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+                
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's'; // 2 to 5 seconds
+                
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000); // cleanup DOM
+            }, 300); // create a new heart every 300ms
+        }
+    </script>
+</body>
+</html>
